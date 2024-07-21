@@ -69,7 +69,7 @@ export default {
 
                     case `/fragsub/${userID}`:
 
-                        let fragConfigs = await getFragmentConfigs(env, host, 'v2ray');
+                        let fragConfigs = await getFragmentConfigs(env, host, 'v2ray'); 
                         fragConfigs = fragConfigs.map(config => config.config);
 
                         return new Response(`${JSON.stringify(fragConfigs, null, 4)}`, { status: 200 });
@@ -86,7 +86,7 @@ export default {
                             return new Response(errorPage, { status: 200, headers: {'Content-Type': 'text/html'}});
                         }
 
-                        const isAuth = await Authenticate(request, env); 
+                        const isAuth = await Authenticate(request, env);  
                         
                         if (request.method === 'POST') {
                             
@@ -101,7 +101,7 @@ export default {
                         const proxySettings = await env.bpb.get("proxySettings", {type: 'json'});
                         const isUpdated = panelVersion === proxySettings?.panelVersion;
                         if (!proxySettings || !isUpdated) await updateDataset(env);
-                        const fragConfs = await getFragmentConfigs(env, host, 'nekoray');
+                        const fragConfs = await getFragmentConfigs(env, host, 'nekoray'); 
                         const homePage = await renderHomePage(env, host, fragConfs);
 
                         return new Response(homePage, {
@@ -145,7 +145,7 @@ export default {
                                 const cookieHeader = `jwtToken=${jwtToken}; HttpOnly; Secure; Max-Age=${7 * 24 * 60 * 60}; Path=/; SameSite=Strict`;
                                 
                                 return new Response('Success', {
-                                    status: 200,
+                                    status: 200, 
                                     headers: {
                                       'Set-Cookie': cookieHeader,
                                       'Content-Type': 'text/plain',
@@ -181,13 +181,13 @@ export default {
                             }
                         });        
 
-                    case '/panel/password':
+                    case '/panel/password': 
 
                         let passAuth = await Authenticate(request, env);
                         if (!passAuth) return new Response('Unauthorized!', { status: 401 });           
                         const newPwd = await request.text();
                         const oldPwd = await env.bpb.get('pwd');
-                        if (newPwd === oldPwd) return new Response('Please enter a new Password!', { status: 400 });
+                        if (newPwd === oldPwd) return new Response('Please enter a new Password!', { status: 400 }); 
                         await env.bpb.put('pwd', newPwd);
 
                         return new Response('Success', {
@@ -199,10 +199,10 @@ export default {
                         });
 
                     default:
-                        // return new Response('Not found', { status: 404 });
-                        url.hostname = 'www.speedtest.net';
+                         return new Response('Not found', { status: 404 }); 
+                        url.hostname = 'www.speedtest.net'; 
                         url.protocol = 'https:';
-                        request = new Request(url, request);
+                        request = new Request(url, request); 
                         return await fetch(request);
                 }
             } else {
@@ -210,7 +210,7 @@ export default {
             }
         } catch (err) {
             /** @type {Error} */ let e = err;
-            const errorPage = renderErrorPage('Something went wrong!', e.message.toString(), false);
+            const errorPage = renderErrorPage('Something went wrong!', e.message.toString(), false); 
             return new Response(errorPage, { status: 200, headers: {'Content-Type': 'text/html'}});
         }
     },
@@ -221,12 +221,12 @@ export default {
  * @param {import("@cloudflare/workers-types").Request} request The incoming request object.
  * @returns {Promise<Response>} A Promise that resolves to a WebSocket response object.
  */
-async function vlessOverWSHandler(request) {
+async function vlessOverWSHandler(request) { 
 	const webSocketPair = new WebSocketPair();
 	const [client, webSocket] = Object.values(webSocketPair);
 	webSocket.accept();
 
-	let address = '';
+	let address = ''; 
 	let portWithRandomLog = '';
 	let currentDate = new Date();
 	const log = (/** @type {string} */ info, /** @type {string | undefined} */ event) => {
